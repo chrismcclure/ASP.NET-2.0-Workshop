@@ -19,6 +19,7 @@ namespace SpyStore_HOL.MVC
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+            .UseUrls("http://*:50794/")
                 .UseStartup<Startup>()
                 .Build();
     }
