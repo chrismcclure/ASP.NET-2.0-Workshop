@@ -42,11 +42,29 @@ namespace SpyStore_HOL.MVC.Controllers
 
 
 
-        [HttpPost("{id}"), ValidateAntiForgeryToken] public IActionResult Update(int customerId, int id, string timeStampString, CartRecordViewModel item) { item.TimeStamp = JsonConvert.DeserializeObject<byte[]>($"\"{timeStampString}\""); if (!ModelState.IsValid) return PartialView(item); var mapper = _config.CreateMapper(); var newItem = mapper.Map<ShoppingCartRecord>(item); try { newItem.DateCreated = DateTime.Now; _shoppingCartRepo.Update(newItem); var updatedItem = _shoppingCartRepo.GetShoppingCartRecord(customerId, item.ProductId); item = mapper.Map<CartRecordViewModel>(updatedItem); return PartialView(item); } catch (Exception ex) { ModelState.AddModelError(string.Empty, "An error occurred updating the cart.  Please reload the page and try again."); return PartialView(item); } }
+        [HttpPost("{id}"), ValidateAntiForgeryToken]
+        public IActionResult Update(int customerId, int id, string timeStampString, CartRecordViewModel item)
+        {
+            item.TimeStamp = JsonConvert.DeserializeObject<byte[]>($"\"{timeStampString}\"");
+            if (!ModelState.IsValid)
+                return PartialView(item);
+            var mapper = _config.CreateMapper();
+            var newItem = mapper.Map<ShoppingCartRecord>(item);
+            try { newItem.DateCreated = DateTime.Now; _shoppingCartRepo.Update(newItem);
+                var updatedItem = _shoppingCartRepo.GetShoppingCartRecord(customerId, item.ProductId);
+                item = mapper.Map<CartRecordViewModel>(updatedItem);
+                return PartialView(item);
+            } catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, "An error occurred updating the cart.  Please reload the page and try again."); return PartialView(item); } }
 
-        [HttpPost("{id}"), ValidateAntiForgeryToken] public IActionResult Delete(int customerId, int id, ShoppingCartRecord item) { _shoppingCartRepo.Delete(id, item.TimeStamp); return RedirectToAction(nameof(Index), new { customerId });
+        [HttpPost("{id}"), ValidateAntiForgeryToken]
+        public IActionResult Delete(int customerId, int id, ShoppingCartRecord item)
+        {
+            _shoppingCartRepo.Delete(id, item.TimeStamp);
+            return RedirectToAction(nameof(Index), new { customerId });
         }
     }
 }
-}
+
 
